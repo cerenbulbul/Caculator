@@ -1,32 +1,34 @@
 
-import {useState} from 'react'
+import { useState, useEffect } from 'react'
 
 function App() {
 
   const [getCalc, setCalc] = useState("");
   const [getResult, setResult] = useState("");
+  const [getHistorry, setHistory] = useState([]);
 
   const ops = ['/', '*', '+', '-', '.'];
 
   const updateCalculate = value => {
-    if(ops.includes(value) && getCalc === '' ||
-    ops.includes(value) && ops.includes(getCalc.slice(-1))) {
+    if (ops.includes(value) && getCalc === '' ||
+      ops.includes(value) && ops.includes(getCalc.slice(-1))) {
       return;
     }
 
-    setCalc(getCalc + value) 
+    setCalc(getCalc + value)
 
-    if(!ops.includes(value)) {
+    if (!ops.includes(value)) {
       setResult(eval(getCalc + value).toString());
     }
   }
 
   const showCalculate = () => {
     setCalc(eval(getCalc).toString())
+    
   }
 
   const deleteLast = () => {
-    if(getCalc == '') {
+    if (getCalc === '') {
       return;
     }
     const value = getCalc.slice(0, -1);
@@ -40,7 +42,7 @@ function App() {
 
     for (let i = 1; i < 10; i++) {
       digits.push(
-        <button onClick={()=> updateCalculate(i.toString())}>{i}</button>
+        <button key={i} onClick={() => updateCalculate(i.toString())}>{i}</button>
       )
     }
     return digits;
@@ -55,7 +57,7 @@ function App() {
         <p>{i}</p>
       )
     }
-    return digits;
+    return getHistorry;
   }
 
   return (
@@ -63,22 +65,22 @@ function App() {
       <div className="calculator">
         <div className="display">
           {getResult ? <span>({getResult})</span> : ''}&nbsp;
-          { getCalc || "0"}
+          {getCalc || "0"}
         </div>
 
         <div className="operators">
-          <button onClick={()=> updateCalculate('/')}>/</button>
-          <button onClick={()=> updateCalculate('*')}>*</button>
-          <button onClick={()=> updateCalculate('+')}>+</button>
-          <button onClick={()=> updateCalculate('-')}>-</button>
+          <button onClick={() => updateCalculate('/')}>/</button>
+          <button onClick={() => updateCalculate('*')}>*</button>
+          <button onClick={() => updateCalculate('+')}>+</button>
+          <button onClick={() => updateCalculate('-')}>-</button>
 
-          <button onClick={()=> deleteLast()}>DEL</button>
+          <button onClick={() => deleteLast()}>DEL</button>
         </div>
 
         <div className="digits">
           {createDigits()}
-          <button onClick={()=> updateCalculate('0')}>0</button>
-          <button onClick={()=> updateCalculate('.')}>.</button>
+          <button onClick={() => updateCalculate('0')}>0</button>
+          <button onClick={() => updateCalculate('.')}>.</button>
           <button onClick={() => showCalculate()}>=</button>
         </div>
       </div>
