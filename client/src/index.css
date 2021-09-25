@@ -1,8 +1,14 @@
 :root {
-    --primary:#d81e5b;
-    --secondary: #8c38ff;
-    --dark: #131a26;
-    --light: #eee;
+    --primary:#E05D5D;
+    --secondary: #FFB344;
+    --dark: #00A19D;
+    --light: #FFF8E5;
+
+    --gradient1: #05668d;
+    --gradient2:#028090;
+    --gradient3: #00a896;
+    --gradient4: #02c39a;
+    --gradient5: #f0f3bd;
 }
 
 * {
@@ -20,8 +26,9 @@ body {
     display: flex;
     min-height: 100vh;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-evenly;
     padding: 16px;
+    background-color: var(--light);
 }
 
 .calculator {
@@ -34,7 +41,7 @@ body {
 }
 
 .history{
-    background-color: #FFF;
+    background-color: var(--secondary);
     border-radius: 16px;
     overflow: hidden;
     padding: 10px;
@@ -43,18 +50,21 @@ body {
 
 h2 {
     text-align: center;
-    color: rosybrown;
+    color: var(--light);
     padding: 10px;
+}
+
+.history-items{
+    align-self: center;
+    text-align: center;
+    margin-top: 5px;
+    color: var(--light);
 }
 
 .history-show{
     margin-top: 20px;
 }
 
-p {
-    text-align: center;
-    margin-top: 5px;
-}
 
 .display {
     padding: 16px;
@@ -67,7 +77,7 @@ p {
 
 .display span {
     font-size: 14px;
-    color: #888;
+    color:var(--light);
 }
 
  button {
@@ -106,8 +116,3 @@ button:hover{
     background-color: var(--dark);
 }
 
-.history-items{
-    align-self: center;
-    text-align: center;
-    margin-top: 5px;
-}

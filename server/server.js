@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const http = require("http").Server(app);
 const path = require("path");
+
 const io = require("socket.io")(http, {
     rejectUnauthorized: false,
     cors: {
@@ -39,23 +40,9 @@ io.on('connection', (socket) => {
         calculation.save().then(() => {
             io.emit('history', calculator)
         })
-
-
     })
 });
 
-
-app.get('/', async (req, res) => {
-    const calc = new calculateModel({ calculator: '5' })
-
-    try {
-        //await calc.save();
-        console.log('get')
-    }
-    catch (err) {
-        console.log('get failed')
-    }
-})
 
 http.listen(3001, () => {
     console.log(`Listening on port 3001!`);
