@@ -83,7 +83,7 @@ function App() {
     }
     for (let i = 0; i < lenght; i++) {
       showhistory.push(
-        <pre key={i}>{getHistorry[i]}</pre>
+        <pre className="history-items" key={i}>{getHistorry[i]}</pre>
       )
     }
     return showhistory;

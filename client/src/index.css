@@ -106,6 +106,8 @@ button:hover{
     background-color: var(--dark);
 }
 
-.history-result{
-    flex-direction: column;
+.history-items{
+    align-self: center;
+    text-align: center;
+    margin-top: 5px;
 }
