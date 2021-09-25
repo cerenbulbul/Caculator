@@ -1,5 +1,9 @@
 
 import { useState, useEffect } from 'react'
+import io from "socket.io-client";
+
+const socket = io("http://localhost:3001/");
+
 
 function App() {
 
@@ -8,6 +12,13 @@ function App() {
   const [getHistorry, setHistory] = useState([]);
 
   const ops = ['/', '*', '+', '-', '.'];
+
+  useEffect(() => {
+    socket.on('history', data => {
+      console.log(data)
+    })
+  }, []);
+
 
   const updateCalculate = value => {
     if (ops.includes(value) && getCalc === '' ||
@@ -24,7 +35,7 @@ function App() {
 
   const showCalculate = () => {
     setCalc(eval(getCalc).toString())
-    
+
   }
 
   const deleteLast = () => {
