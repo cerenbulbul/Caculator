@@ -46,6 +46,7 @@ function App() {
   const showCalculate = () => {
     setCalc(eval(getCalc).toString())
     socket.emit('history', eval(getCalc).toString())
+    window.location.reload();
     //setHistory([eval(getCalc).toString(), getHistorry])
   }
 
