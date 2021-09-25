@@ -26,16 +26,17 @@ catch (err) {
 
 
 io.on('connection', (socket) => {
-    calculateModel.find().then(result => {
-        socket.emit('output-history', result)
-    })
+    calculateModel.find()
+        .then(result => {
+            socket.emit('output-history', result)
+        })
     console.log('a user connected');
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });
     socket.on('history', calculator => {
-        const message = new calculateModel({ calculator });
-        message.save().then(() => {
+        const calculation = new calculateModel({ calculator });
+        calculation.save().then(() => {
             io.emit('history', calculator)
         })
 

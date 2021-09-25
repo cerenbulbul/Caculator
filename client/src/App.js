@@ -14,11 +14,21 @@ function App() {
   const ops = ['/', '*', '+', '-', '.'];
 
   useEffect(() => {
-    socket.on('history', data => {
-      console.log(data)
-    })
+    getHistoryData();
   }, []);
 
+  const getHistoryData = () => {
+    socket.on('output-history', data => {
+      const result = [];
+      if (data.length) {
+        data.forEach(calc => {
+          result.push(calc.calculator)
+        });
+      }
+      result.reverse();
+      setHistory(result)
+    })
+  }
 
   const updateCalculate = value => {
     if (ops.includes(value) && getCalc === '' ||
@@ -35,7 +45,8 @@ function App() {
 
   const showCalculate = () => {
     setCalc(eval(getCalc).toString())
-
+    socket.emit('history', eval(getCalc).toString())
+    //setHistory([eval(getCalc).toString(), getHistorry])
   }
 
   const deleteLast = () => {
@@ -43,7 +54,6 @@ function App() {
       return;
     }
     const value = getCalc.slice(0, -1);
-
     setCalc(value)
   }
 
@@ -61,14 +71,21 @@ function App() {
 
 
   const showHistory = () => {
-    const digits = [];
+    const showhistory = [];
+    let lenght = 0;
 
-    for (let i = 0; i < 10; i++) {
-      digits.push(
-        <p>{i}</p>
+    if (getHistorry.length < 10) {
+      lenght = getHistorry.length
+    }
+    else {
+      lenght = 10;
+    }
+    for (let i = 0; i < lenght; i++) {
+      showhistory.push(
+        <pre key={i}>{getHistorry[i]}</pre>
       )
     }
-    return getHistorry;
+    return showhistory;
   }
 
   return (
@@ -92,7 +109,7 @@ function App() {
           {createDigits()}
           <button onClick={() => updateCalculate('0')}>0</button>
           <button onClick={() => updateCalculate('.')}>.</button>
-          <button onClick={() => showCalculate()}>=</button>
+          <button onClick={() => { showCalculate(); }}>=</button>
         </div>
       </div>
 
