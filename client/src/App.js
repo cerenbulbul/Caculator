@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react'
+import React,{ useState, useEffect } from 'react'
 import io from "socket.io-client";
 
 const socket = io("http://localhost:3001/");
@@ -58,7 +58,6 @@ function App() {
     setCalc(value)
   }
 
-
   const createDigits = () => {
     const digits = [];
 
@@ -69,7 +68,6 @@ function App() {
     }
     return digits;
   }
-
 
   const showHistory = () => {
     const showhistory = [];
@@ -128,3 +126,4 @@ function App() {
 }
 
 export default App;
+
