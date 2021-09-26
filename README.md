@@ -43,27 +43,44 @@ I have examined the frontend part in two different ways, the design of the calcu
 <a name="Func"></a>
 ### Functions
 
-I created the updateCalculate() function to save the operations. There are two conditions while implementing the function. One of them is, if before the operation is nothing or include another operation return nothing. Otherwise, calculate the operation using eval() function. 
+I created the parseCalculationString() function to split the operations and numbers. In this function, I'm converting the string to array. For example the string is "2+3" and the parseCalculationString() function return it [2, '+', 3] as an array. 
 
 ```
-  const updateCalculate = value => {
-    if (ops.includes(value) && getCalc === '' ||
-      ops.includes(value) && ops.includes(getCalc.slice(-1))) {
-      return;
+function parseCalculationString(s) {
+   for (var i = 0, ch; ch = s.charAt(i); i++) {
+        if ('^*/+-'.indexOf(ch) > -1) {
+          if (current == '' && ch == '-') {
+            current = '-';
+          } else {
+            calculation.push(parseFloat(current), ch);
+            current = '';
+          }
+        } else {
+          current += s.charAt(i);
+        }
     }
-    if (!ops.includes(value)) {
-      setResult(eval(getCalc + value).toString());
-    }
-  }
+ }
 ```
 
-I created the showCalculate() function to show calculation and save the calculation to database. To save the calculation I used emit() function. 
+I created the calculate() function to calculate the operations. In this function I'm getting the result of the parseCalculationString() function and calculate the operation. 
 
 ```
-  const showCalculate = () => {
-    setCalc(eval(getCalc).toString())
-    socket.emit('history', eval(getCalc).toString())
-    window.location.reload();
+function calculate(calc) {
+   for (var i = 0; i < ops.length; i++) {
+        for (var j = 0; j < calc.length; j++) {
+          if (ops[i][calc[j]]) {
+            currentOp = ops[i][calc[j]];
+          } 
+          else if (currentOp) {
+            newCalc[newCalc.length - 1] =
+              currentOp(newCalc[newCalc.length - 1], calc[j]);
+            currentOp = null;
+          } 
+          else {
+            newCalc.push(calc[j]);
+          }
+        }
+      }
   }
 ```
 
