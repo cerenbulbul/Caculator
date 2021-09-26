@@ -1,5 +1,5 @@
 
-import React,{ useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import io from "socket.io-client";
 
 const socket = io("http://localhost:3001/");
@@ -10,7 +10,6 @@ function App() {
   const [getCalc, setCalc] = useState("");
   const [getResult, setResult] = useState("");
   const [getHistorry, setHistory] = useState([]);
-
   const ops = ['/', '*', '+', '-', '.'];
 
   useEffect(() => {
@@ -35,19 +34,65 @@ function App() {
       ops.includes(value) && ops.includes(getCalc.slice(-1))) {
       return;
     }
-
     setCalc(getCalc + value)
+    setResult(getCalc + value);
+    
+  }
 
-    if (!ops.includes(value)) {
-      setResult(eval(getCalc + value).toString());
+  function parseCalculationString(s) {
+    var calculation = [],
+      current = '';
+    for (var i = 0, ch; ch = s.charAt(i); i++) {
+      if ('^*/+-'.indexOf(ch) > -1) {
+        if (current == '' && ch == '-') {
+          current = '-';
+        } else {
+          calculation.push(parseFloat(current), ch);
+          current = '';
+        }
+      } else {
+        current += s.charAt(i);
+      }
+    }
+    if (current != '') {
+      calculation.push(parseFloat(current));
+    }
+    return calculation;
+  }
+
+  function calculate(calc) {
+    var ops = [{ '^': (a, b) => Math.pow(a, b) },
+    { '*': (a, b) => a * b, '/': (a, b) => a / b },
+    { '+': (a, b) => a + b, '-': (a, b) => a - b }],
+      newCalc = [],
+      currentOp;
+    for (var i = 0; i < ops.length; i++) {
+      for (var j = 0; j < calc.length; j++) {
+        if (ops[i][calc[j]]) {
+          currentOp = ops[i][calc[j]];
+        } else if (currentOp) {
+          newCalc[newCalc.length - 1] =
+            currentOp(newCalc[newCalc.length - 1], calc[j]);
+          currentOp = null;
+        } else {
+          newCalc.push(calc[j]);
+        }
+      }
+      calc = newCalc;
+      newCalc = [];
+    }
+    if (calc.length > 1) {
+      console.log('Error: unable to resolve calculation');
+      return calc;
+    } else {
+      return calc[0];
     }
   }
 
   const showCalculate = () => {
-    setCalc(eval(getCalc).toString())
-    socket.emit('history', eval(getCalc).toString())
+    let result = calculate(parseCalculationString(getCalc))
+    socket.emit('history', result.toString())
     window.location.reload();
-    //setHistory([eval(getCalc).toString(), getHistorry])
   }
 
   const deleteLast = () => {
@@ -120,7 +165,7 @@ function App() {
         </div>
 
       </div>
-    
+
     </div>
   );
 }
