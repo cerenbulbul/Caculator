@@ -1,70 +1,141 @@
-# Getting Started with Create React App
+# Calculator
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+### Creator: 
 
-In the project directory, you can run:
+- Ceren Bülbül
 
-### `npm start`
+___
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
 
-### `npm test`
+1. [ Introduction ](#Intro)
+2. [ Project Overwiev ](#Def)
+   * [Front-end Part](#Front) 
+       - [Functions](#Func)
+       - [Design](#Design)
+   * [Back-end Part](#Back)
+3. [ Project Tools](#Tools) 
+5. [ How It Runs ? ](#Run)  
+6. [How It Works ?](#Work)
+7. [ Demo ](#Demo) 
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+<a name="Intro"></a>
+## Introduction
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+This project's intention is a create a bot calculator application. Requirements for this projects are: 
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+* Operation command: The purpose of this command is to calculate the desired operations.
+* History Command: The purpose of this command is to display the 10 most recently calculated transactions.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
+<a name="Def"></a>
+## Project Overwiev
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+In this project, I first created the functions and design of the calculator with the react framework and saved them in the 'client' folder. Then, I created a database with MongoDB and ensured that the calculated operations were saved in this database with the help of socket.io. Finally, I had the 10 most recent data displayed from the saved data.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+<a name="Front"></a>
+### Front-end Part
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+I have examined the frontend part in two different ways, the design of the calculator and the functions of its operations.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+<a name="Func"></a>
+### Functions
 
-## Learn More
+I created the updateCalculate() function to save the operations. There are two conditions while implementing the function. One of them is, if before the operation is nothing or include another operation return nothing. Otherwise, calculate the operation using eval() function. 
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```
+  const updateCalculate = value => {
+    if (ops.includes(value) && getCalc === '' ||
+      ops.includes(value) && ops.includes(getCalc.slice(-1))) {
+      return;
+    }
+    if (!ops.includes(value)) {
+      setResult(eval(getCalc + value).toString());
+    }
+  }
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+I created the showCalculate() function to show calculation and save the calculation to database. To save the calculation I used emit() function. 
 
-### Code Splitting
+```
+  const showCalculate = () => {
+    setCalc(eval(getCalc).toString())
+    socket.emit('history', eval(getCalc).toString())
+    window.location.reload();
+  }
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+<a name="Design"></a>
+### Design
 
-### Analyzing the Bundle Size
+<p align="center">
+ <img src="https://user-images.githubusercontent.com/36292743/134823577-6f93af33-d44a-416c-a0e2-e16606a0a75c.png" width="500" height="300"> 
+</p>
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+<a name="Back"></a>
+### Back-end Part
 
-### Making a Progressive Web App
+I created a database using MangoDB. The database has one table and 2 attributes these are id and calculator. 
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+<img src="https://user-images.githubusercontent.com/36292743/134823730-b65d3b43-0ee4-4873-ac8b-7a742f0ab511.png" width="200" height="200"> 
+ 
 
-### Advanced Configuration
+I used socket library to save the calculator result data to MangoDB. To save the data I used emit() method.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+```
+  socket.on('history', calculator => {
+        const calculation = new calculateModel({ calculator });
+        calculation.save().then(() => {
+            io.emit('history', calculator)
+        })
+  })
+```
 
-### Deployment
+<a name="Tools"></a>
+## Project Tools
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+**Tools:**
+- React.js Framework
+- MangoDB
+- Socket.io
 
-### `npm run build` fails to minify
+**Libraries:**
+- mangoose
+- express
+- cors
+- socket.io
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+<a name="Run"></a>
+## How It Runs ?
+
+```
+  npm install
+  cd server 
+  npm start
+  cd client 
+  npm start
+```
+
+<a name="Works"></a>
+## How It Works ?
+
+I explain the work in an example. For example, in the calculator you would like to multiply 7 and 4 (7*4). As you see the bellow the screen. 
+
+<p align="center">
+ <img src="https://user-images.githubusercontent.com/36292743/134824522-bbb50516-356d-44d4-9654-310c68db4c72.png" width="500" height="300"> 
+</p>
+
+After that, you are clicking "=" button. Then, the "History" card is going to change as you see the bellow. 
+
+<p align="center">
+ <img src="https://user-images.githubusercontent.com/36292743/134824557-b591aed7-f7b1-4943-b676-f8b7519fc9bc.png" width="200" height="300"> 
+</p>
+
+<a name="Demo"></a>
+## Demo
+
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/GsF8Dt2YFko/0.jpg)](http://www.youtube.com/watch?v=GsF8Dt2YFko "Click For Demo")
+
+
